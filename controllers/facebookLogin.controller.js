@@ -6,6 +6,9 @@ dotenv.config({ path: __dirname + `/.env` });
 const passport=require('passport');
 const FacebookStrategy=require('passport-facebook').Strategy;
 
+const users=require('../models/account.model');
+const dbOperations=require('../controllers/database.controller');
+
 passport.serializeUser(function (user, cb) {
     cb(null, user);
   });
@@ -25,8 +28,21 @@ passport.serializeUser(function (user, cb) {
         
         //console.log(profile)
         process.nextTick(function(){  
-            //console.log(profile);
-            return done(null, profile);
+            let user_data=new users();
+            user_data.id=profile.id;
+            user_data.name=profile.displayName;
+            user_data.email=profile.emails[0].value;
+            user_data.photo= (profile.photos.length > 0)? profile.photos[0].value: "";
+            user_data.token=accessToken;
+            console.log(user_data);
+            let users=dbOperations.checkUserExists(profile.id);
+            if(users){
+              console.log("User Already Exists");
+            }else
+            {
+              console.log("New User")
+            }
+            return done(null, user_data);
         });
         
      
@@ -55,7 +71,10 @@ router.get('/facebook/user',function(req,res){
 
 
 router.get('/testApi',function(req,res){
-    res.status(200).json({"response": "Test api Working"});
+  console.log(req.user);
+    dbOperations.checkUserExists(req.user).then(result=>{
+      console.log(result);
+    })
 });
 
 module.exports=router;

@@ -1,10 +1,11 @@
  class Account {
       
-    constructor(id,facebookId,name,extraInfo,token){
+    constructor(id,facebookId,name,email,photo,token){
         this.id=id;
         this.facebookId=facebookId;
         this.name=name;
-        this.extraInfo=extraInfo;
+        this.email=email;
+        this.photo=photo;
         this.token=token;
     }
 }

@@ -8,7 +8,7 @@ const passport=require('passport');
 
 dotenv.config();
 
-const PORT= process.env.PORT;
+const PORT= CONFIG.PORT;
 
 const app=express();
 app.use(bodyParser.json({extended:true}));
