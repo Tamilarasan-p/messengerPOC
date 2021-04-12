@@ -47,6 +47,13 @@ router.get('/facebook/callback',passport.authenticate('facebook',{ failureRedire
     res.status(200).json({data:req.user});
 });
 
+//data api for test
+
+router.get('/facebook/user',function(req,res){
+  res.status(200).json({data:req.user});
+});
+
+
 router.get('/testApi',function(req,res){
     res.status(200).json({"response": "Test api Working"});
 });
