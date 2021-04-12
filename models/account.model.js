@@ -10,4 +10,4 @@
     }
 }
 
-module.exports=Account;
+module.exports=UserDetails;
