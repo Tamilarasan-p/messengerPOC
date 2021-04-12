@@ -11,13 +11,8 @@ const Account = require('../models/account.model');
 router.post('/facebookTokenAuthenticate',(req,res)=>{
     
     const key=req.body.accessToken;
-    const UrlOptions={
-        hostname:"https://graph.facebook.com/",
-        path:"v8.0/me?",
-        port:443
-    };
 
-    url=`https://graph.facebook.com/v8.0/me?access_token=${key}`
+    url=`https://graph.facebook.com/v10.0/me?access_token=${key}`
     try{
         fetch(url).then(response => response.json()).then(data => 
             {
