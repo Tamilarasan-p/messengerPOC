@@ -44,8 +44,8 @@ const AuthController=require('./controllers/auth.controller');
 const fbLoginController=require('./controllers/facebookLogin.controller');
 
 //routes
-app.use('/api',cors(corsOptions),isLoggedIn,AuthController);
-app.use('/auth',cors(corsOptions),fbLoginController);
+app.use('/api',cors(),isLoggedIn,AuthController);
+app.use('/auth',cors(),fbLoginController);
 
 app.get('/', (req, res) => {
     res.send("Hello from Server");
