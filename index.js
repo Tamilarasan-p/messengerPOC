@@ -12,19 +12,19 @@ const PORT= process.env.PORT;
 
 const app=express();
 app.use(bodyParser.json({extended:true}));
-
-var whitelist = ['https://shopify-11.herokuapp.com', 'https://shopify-bot.netlify.app','https://www.facebook.com']
-var corsOptions = {
-  origin: function (origin, callback) {
-    if (whitelist.indexOf(origin) !== -1) {
-      callback(null, true)
-    } else {
-      callback(new Error('Not allowed by CORS'))
-    }
-  }
-}
+app.use(cors());
+// var whitelist = ['https://shopify-11.herokuapp.com', 'https://shopify-bot.netlify.app','https://www.facebook.com']
+// var corsOptions = {
+//   origin: function (origin, callback) {
+//     if (whitelist.indexOf(origin) !== -1) {
+//       callback(null, true)
+//     } else {
+//       callback(new Error('Not allowed by CORS'))
+//     }
+//   }
+// }
 app.use(function(req,res,next){
-    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Allow-Origin', 'https://shopify-11.herokuapp.com', 'https://shopify-bot.netlify.app');
     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
     res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization, Content-Length, X-Requested-With, Access-Control-Allow-Origin');
     res.setHeader("Access-Control-Allow-Credentials",true);
