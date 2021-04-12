@@ -34,13 +34,13 @@ passport.serializeUser(function (user, cb) {
   ));
 
 //auth router
-router.get('/auth/facebook',passport.authenticate('facebook',{
+router.get('/facebook',passport.authenticate('facebook',{
     scope:['email','pages_show_list','pages_messaging','pages_messaging_subscriptions','pages_read_engagement',
     'pages_manage_ads','pages_read_user_content','pages_manage_metadata']}
 ));
 
 //callback router
-router.get('/auth/facebook/callback',passport.authenticate('facebook',{ failureRedirect: '/login' }),
+router.get('/facebook/callback',passport.authenticate('facebook',{ failureRedirect: '/login' }),
   function(req, res) {
       console.log("--RESPONSE--");
       console.log(req.user);
