@@ -1,4 +1,4 @@
- class Account {
+ class UserAccount {
       
     constructor(id,facebookId,name,email,photo,token){
         this.id=id;
@@ -10,4 +10,4 @@
     }
 }
 
-module.exports=UserDetails;
+module.exports=UserAccount;
