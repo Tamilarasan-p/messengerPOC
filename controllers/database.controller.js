@@ -83,10 +83,30 @@ async function insertPageDetails(_page){
     }catch(err){
         console.log(`Page Data Insert error:${err}`);
     }
+};
+
+//get facebook page access token using page id
+
+async function getPageinfo(pageid){
+    console.log(pageid);
+    try{
+    let sqlConnection= await SQL.connect(config);
+    let pageInfo = await sqlConnection.request().input('page_id', SQL.Numeric, pageid)
+            .query('select * from page_information where page_id = @page_id');
+            console.log(pageInfo);
+    return pageInfo.recordset[0].page_access_token;
+    }
+    catch(err){
+        console.log(err);
+    }
+
 }
+
+
 module.exports={
     checkUserExists:checkUserExists,
     insertNewUserRecord:insertNewUserRecord,
     insertPageDetails:insertPageDetails,
-    checkPageExists:checkPageExists
+    checkPageExists:checkPageExists,
+    getPageinfo:getPageinfo
 }

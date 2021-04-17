@@ -17,8 +17,15 @@ const dbConfig = {
     port : parseInt(process.env.DATABASE_PORT, 10),
 }
  
+
+//messages data
+
+
+
+
+
 module.exports={
     PORT:portnum,
-    DBConfig:dbConfig
+    DBConfig:dbConfig,
 }
 

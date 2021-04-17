@@ -9,10 +9,10 @@ const FacebookStrategy=require('passport-facebook').Strategy;
 const UserDetails=require('../models/account.model');
 const pageDetails=require('../models/pages.model');
 const dbOperations=require('../controllers/database.controller');
+const messengerInitialize=require("../services/messengerservice");
+const { response } = require('express');
 
 
-//test callback url
-const FACEBOOK_CALLBACK_URL="http://localhost:8080/auth/facebook/callback"
 
 
 
@@ -27,31 +27,30 @@ passport.serializeUser(function (user, cb) {
   passport.use(new FacebookStrategy({
       clientID:process.env.FACEBOOK_APP_ID,
       clientSecret: process.env.FACEBOOK_APP_SECRET,
-      callbackURL: FACEBOOK_CALLBACK_URL,
+      callbackURL: process.env.FACEBOOK_CALLBACK_URL,
       profileFields: ['id', 'displayName', 'photos', 'email','accounts'],
       enableProof:true
       
     }, function (accessToken, refreshToken, profile, done) {
         
         //console.log(profile)
-        process.nextTick(function(){  
-            let userdata=new UserDetails();
-            userdata.id=profile.id;
-            userdata.facebookId=profile.id;
-            userdata.name=profile.displayName;
-            userdata.email=profile.emails[0].value;
-            userdata.photo= (profile.photos.length > 0)? profile.photos[0].value: "";
-            userdata.token=accessToken;
-            
-            //console.log(userdata);
+        process.nextTick(function(){      
+            console.log(profile);
             dbOperations.checkUserExists(profile.id).then((result)=>{
               //console.log(`Recordset Length:${result.recordset.length}`);
               if(result.recordset.length > 0){
                 console.log("User Already Exists");
-                //console.log(result);
+                console.log(result.recordset[0].client_name);
+                return done(null,result.recordset);
               }else
               {
-                
+                let userdata=new UserDetails();
+                userdata.id=profile.id;
+                userdata.facebookId=profile.id;
+                userdata.name=profile.displayName;
+                userdata.email=(profile.emails[0].value || '').toLowerCase();
+                userdata.photo= (profile.photos.length > 0)? profile.photos[0].value: "";
+                userdata.token=accessToken;
                 dbOperations.insertNewUserRecord(userdata).then((result)=>{
                   console.log("--New User Insert result--");
                   console.log(result);
@@ -59,7 +58,7 @@ passport.serializeUser(function (user, cb) {
               }
             });
 
-            let totalPages=profile._json.accounts.data.length;
+            let totalPages=profile._json.accounts.length;
             console.log(`page count:${totalPages}`);
             if(totalPages > 0)
             {
@@ -91,7 +90,7 @@ passport.serializeUser(function (user, cb) {
               console.log("No Pages available for this account");
             }
             
-            return done(null, userdata);
+            return done(null, profile);
         });
         
      
@@ -109,13 +108,15 @@ router.get('/facebook/callback',passport.authenticate('facebook',{ failureRedire
   function(req, res) {
       
     res.status(200).json({data:req.user});
-    res.redirect("https://shopify-bot.netlify.app/dashboard");
+    //res.redirect("https://shopify-bot.netlify.app/dashboard");
 });
 
 //data api for test
 
-router.get('/facebook/user',function(req,res){
-  res.status(200).json({data:req.user});
+router.get('/initialize',function(req,res){
+    messengerInitialize.setUpMessengerPlatform((response)=>{
+      res.status(200).json({"Result":response});
+    });
 });
 
 

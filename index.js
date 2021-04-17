@@ -5,6 +5,7 @@ const cors = require('cors');
 const CONFIG=require('./config/config');
 const dotenv=require('dotenv');
 const passport=require('passport');
+const webhookRoutes=require('./routes/webhookRouter')
 
 dotenv.config();
 
@@ -13,18 +14,9 @@ const PORT= CONFIG.PORT;
 const app=express();
 app.use(bodyParser.json({extended:true}));
 app.use(cors());
-// var whitelist = ['https://shopify-11.herokuapp.com', 'https://shopify-bot.netlify.app','https://www.facebook.com']
-// var corsOptions = {
-//   origin: function (origin, callback) {
-//     if (whitelist.indexOf(origin) !== -1) {
-//       callback(null, true)
-//     } else {
-//       callback(new Error('Not allowed by CORS'))
-//     }
-//   }
-// }
+
 app.use(function(req,res,next){
-    res.setHeader('Access-Control-Allow-Origin', 'https://shopify-11.herokuapp.com', 'https://shopify-bot.netlify.app');
+    res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
     res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization, Content-Length, X-Requested-With, Access-Control-Allow-Origin');
     res.setHeader("Access-Control-Allow-Credentials",true);
@@ -34,11 +26,12 @@ app.use(function(req,res,next){
 app.use(session({
     resave:false,
     saveUninitialized:true,
-    secret:'keyforlogin'
+    secret:process.env.SESSION_SECRET
 }));
 app.use(passport.initialize());
 app.use(passport.session());
 
+app.use('/',webhookRoutes);
 //controllers
 const AuthController=require('./controllers/auth.controller');
 const fbLoginController=require('./controllers/facebookLogin.controller');
